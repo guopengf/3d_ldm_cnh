@@ -44,20 +44,39 @@
     "diffusion_def": {
         "_target_": "generative.networks.nets.DiffusionModelUNet",
         "spatial_dims": "@spatial_dims",
-        "in_channels": "$1+@latent_channels",
+        "in_channels": "$@latent_channels",
         "out_channels": "@latent_channels",
-        "num_channels":[64, 96, 128],
+        "num_channels":[64, 128, 256],
         "attention_levels":[false, false, true],
         "num_head_channels":[0, 0, 32],
         "num_res_blocks": 2,
         "use_flash_attention": true
     },
+    "controlnet_def": {
+        "_target_": "generative.networks.nets.ControlNet",
+        "spatial_dims": "@spatial_dims",
+        "in_channels": "$@latent_channels",
+        "num_channels":[64, 128, 256],
+        "attention_levels":[false, false, true],
+        "num_head_channels":[0, 0, 32],
+        "num_res_blocks": 2,
+        "use_flash_attention": true,
+        "conditioning_embedding_in_channels": 1,
+        "conditioning_embedding_num_channels": [32, 64, 128]
+    },
+     "controlnet_train": {
+        "batch_size": 1,
+        "patch_size": [160, 192, 128],
+        "lr": 1e-5,
+        "n_epochs": 10000,
+        "val_interval": 10
+    },
     "diffusion_train": {
-        "batch_size": 4,
+        "batch_size": 1,
         "patch_size": [160, 192, 128],
         "lr": 1e-4,
         "n_epochs": 100000,
-        "val_interval": 200
+        "val_interval": 10
     },
     "NoiseScheduler": {
         "num_train_timesteps": 1000,
